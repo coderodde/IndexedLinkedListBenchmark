@@ -20,8 +20,6 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
-import org.openjdk.jmh.runner.options.WarmupMode;
 
 @State(Scope.Benchmark)
 public class IndexedLinkedListPerformance {
@@ -37,6 +35,7 @@ public class IndexedLinkedListPerformance {
     private static final int REMOVE_FIRST_OPERATIONS        = 5_000;
     
     private static final int MAXIMUM_INTEGER = 1_000;
+    private static final int MAXIMUM_COLLECTION_SIZE = 20;
     
     private IndexedLinkedList<Integer> roddeList = new IndexedLinkedList<>();
     private LinkedList<Integer> linkedList = new LinkedList<>();
@@ -96,23 +95,14 @@ public class IndexedLinkedListPerformance {
         return random.nextInt(MAXIMUM_INTEGER + 1);
     }
  
-    private void profileAddFirst() {
-        profileAddFirstRoddeListV2();
-        profileAddFirstLinkedList();
-        profileAddFirstArrayList();
-        profileAddFirstTreeList();
-
-        listsEqual();
-        System.out.println();
-    }
- 
+    //// profileAddFirst ///////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileAddFirstRoddeListV2() {
+    public void profileAddFirstRoddeList() {
         profileAddFirst(roddeList, 
                         ADD_FIRST_OPERATIONS, 
                         randomRoddeList);
@@ -153,6 +143,212 @@ public class IndexedLinkedListPerformance {
                         ADD_FIRST_OPERATIONS, 
                         randomTreeList);
     }
+    ////////////////////////////////////////////////////////////////////////////
+ 
+    
+    //// profileAddLast ////////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddLastRoddeList() {
+        profileAddLast(roddeList, 
+                       ADD_LAST_OPERATIONS, 
+                       randomRoddeList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddLastLinkedList() {
+        profileAddLast(linkedList, 
+                       ADD_LAST_OPERATIONS, 
+                       randomJavaUtilLinkedList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddLastArrayList() {
+        profileAddLast(arrayList, 
+                       ADD_LAST_OPERATIONS, 
+                       randomJavaUtilArrayList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddLastTreeList() {
+        profileAddLast(treeList, 
+                       ADD_LAST_OPERATIONS, 
+                       randomTreeList);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// profileAddAtIndex /////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddAtIndexRoddeList() {
+        profileAddAtIndex(roddeList, 
+                          ADD_AT_OPERATIONS, 
+                          randomRoddeList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddAtIndexArrayList() {
+        profileAddAtIndex(arrayList, 
+                          ADD_AT_OPERATIONS, 
+                          randomJavaUtilArrayList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddAtIndexLinkedList() {
+        profileAddAtIndex(linkedList, 
+                          ADD_AT_OPERATIONS, 
+                          randomJavaUtilLinkedList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddAtIndexTreeList() {
+        profileAddAtIndex(treeList, 
+                          ADD_AT_OPERATIONS, 
+                          randomTreeList);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// AddCollection /////////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionRoddeList() {
+        profileAddCollection(roddeList, 
+                             ADD_LAST_COLLECTION_OPERATIONS, 
+                             randomRoddeList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionArrayList() {
+        profileAddCollection(arrayList, 
+                             ADD_LAST_COLLECTION_OPERATIONS, 
+                             randomJavaUtilArrayList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionLinkedList() {
+        profileAddCollection(linkedList, 
+                             ADD_LAST_COLLECTION_OPERATIONS, 
+                             randomJavaUtilLinkedList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionTreeList() {
+        profileAddCollection(treeList, 
+                             ADD_LAST_COLLECTION_OPERATIONS, 
+                             randomTreeList);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// profileAddCollectionAtIndex ///////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionAtIndexRoddeList() {
+        profileAddCollectionAtIndex(roddeList, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
+                                    randomRoddeList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionAtIndexArrayList() {
+        profileAddCollectionAtIndex(arrayList, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
+                                    randomJavaUtilArrayList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionAtIndexLinkedList() {
+        profileAddCollectionAtIndex(linkedList, 
+                                    ADD_AT_OPERATIONS, 
+                                    randomJavaUtilLinkedList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileAddCollectionAtIndexTreeList() {
+        profileAddCollectionAtIndex(treeList, 
+                                    ADD_AT_OPERATIONS, 
+                                    randomTreeList);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
     
     public static void main(String[] args) throws Exception {
         Options opt = new OptionsBuilder()
@@ -167,12 +363,62 @@ public class IndexedLinkedListPerformance {
         new Runner(opt).run();
     }
     
+    private static List<Integer> createRandomCollection(Random random) {
+        int size = 1 + random.nextInt(MAXIMUM_COLLECTION_SIZE);
+
+        List<Integer> list = new ArrayList<>(size);
+
+        for (int i = 0; i < size; i++) {
+            list.add(getRandomInteger(random));
+        }
+
+        return list;
+    }
+    
     // private methods:
     private void profileAddFirst(List<Integer> list,
                                  int operations, 
                                  Random random) {
         for (int i = 0; i < operations; i++) {
             list.add(0, getRandomInteger(random));
+        }
+    }
+    
+    private void profileAddLast(List<Integer> list,
+                                int operations,
+                                Random random) {
+        for (int i = 0; i < operations; i++) {
+            list.add(list.size(), getRandomInteger(random));
+        }
+    }
+    
+    private void profileAddAtIndex(List<Integer> list,
+                                   int operations,
+                                   Random random) {
+        for (int i = 0; i < operations; i++) {
+            int index = random.nextInt(list.size());
+            Integer value = getRandomInteger(random);
+            list.add(index, value);
+        }
+    }
+    
+    private void profileAddCollection(List<Integer> list, 
+                                      int operations, 
+                                      Random random) {
+        for (int i = 0; i < operations; i++) {
+            List<Integer> collection = createRandomCollection(random);
+            list.addAll(collection);
+        }
+    }
+    
+    private void profileAddCollectionAtIndex(List<Integer> list,
+                                             int operations,
+                                             Random random) {
+        
+        for (int i = 0; i < operations; i++) {
+            List<Integer> collection = createRandomCollection(random);
+            int index = random.nextInt(list.size());
+            list.addAll(index, collection);
         }
     }
 }
