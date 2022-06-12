@@ -34,20 +34,20 @@ public class IndexedLinkedListPerformance {
     private static final int GET_OPERATIONS                 = 5_000;
     private static final int REMOVE_FIRST_OPERATIONS        = 5_000;
     
-    private static final int MAXIMUM_INTEGER = 1_000;
+    private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
     
-    private IndexedLinkedList<Integer> roddeList = new IndexedLinkedList<>();
-    private LinkedList<Integer> linkedList = new LinkedList<>();
-    private ArrayList<Integer> arrayList = new ArrayList<>();
-    private TreeList<Integer> treeList = new TreeList<>();
+    private IndexedLinkedList<Integer> roddeList  = new IndexedLinkedList<>();
+    private LinkedList<Integer>        linkedList = new LinkedList<>();
+    private ArrayList<Integer>         arrayList  = new ArrayList<>();
+    private TreeList<Integer>          treeList   = new TreeList<>();
     
     private final long seed = System.currentTimeMillis();
     
-    private Random randomJavaUtilLinkedList = new Random(seed);
-    private Random randomJavaUtilArrayList  = new Random(seed);
-    private Random randomRoddeList          = new Random(seed);
-    private Random randomTreeList           = new Random(seed);
+    private final Random randomJavaUtilLinkedList = new Random(seed);
+    private final Random randomJavaUtilArrayList  = new Random(seed);
+    private final Random randomRoddeList          = new Random(seed);
+    private final Random randomTreeList           = new Random(seed);
 
     private void listsEqual() {
         listsEqual(roddeList,
@@ -350,6 +350,49 @@ public class IndexedLinkedListPerformance {
     ////////////////////////////////////////////////////////////////////////////
     
     
+    //// profileGet ////////////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileGetRoddeList() {
+        profileGet(roddeList, GET_OPERATIONS, randomRoddeList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileGetArrayList() {
+        profileGet(arrayList, GET_OPERATIONS, randomJavaUtilArrayList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileGetLinkedList() {
+        profileGet(linkedList, GET_OPERATIONS, randomJavaUtilLinkedList);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileGetTreeList() {
+        profileGet(treeList, GET_OPERATIONS, randomTreeList);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
     public static void main(String[] args) throws Exception {
         Options opt = new OptionsBuilder()
                 .warmupForks(0)
@@ -419,6 +462,12 @@ public class IndexedLinkedListPerformance {
             List<Integer> collection = createRandomCollection(random);
             int index = random.nextInt(list.size());
             list.addAll(index, collection);
+        }
+    }
+    
+    private void profileGet(List<Integer> list, int operations, Random random) {
+        for (int i = 0; i < operations; i++) {
+            list.get(random.nextInt(list.size()));
         }
     }
 }
