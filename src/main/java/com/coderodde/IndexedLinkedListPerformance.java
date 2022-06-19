@@ -11,6 +11,7 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.apache.commons.collections4.list.TreeList;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Group;
+import org.openjdk.jmh.annotations.GroupThreads;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
@@ -18,6 +19,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
@@ -42,14 +44,12 @@ public class IndexedLinkedListPerformance {
     
     private static final long seed = System.currentTimeMillis();
     
-    
-    
     @State(Scope.Thread)
     public static class IndexedLinkedListState {
         public List<Integer> list;
         public Random random;
         
-        @Setup(Level.Iteration)
+        @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             random = new Random(seed);
@@ -61,14 +61,14 @@ public class IndexedLinkedListPerformance {
         public List<Integer> list;
         public Random random;
         
-        @Setup(Level.Iteration)
+        @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             random = new Random(seed);
         }
     }
     
-    @State(Scope.Benchmark)
+    @State(Scope.Thread)
     public static class LinkedListState {
         public List<Integer> list;
         public Random random;
@@ -80,7 +80,7 @@ public class IndexedLinkedListPerformance {
         }
     }
     
-    @State(Scope.Benchmark)
+    @State(Scope.Thread)
     public static class TreeListState {
         public List<Integer> list;
         public Random random;
@@ -104,7 +104,10 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g1")
-    public void Benchmark_1A_profileAddFirstRoddeList(IndexedLinkedListState state) {
+    @GroupThreads(1)
+    public void Benchmark_1A_profileAddFirstRoddeList(
+            IndexedLinkedListState state) {
+        
         profileAddFirst(state.list,
                         ADD_FIRST_OPERATIONS, 
                         state.random);
@@ -117,6 +120,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g2")
+    @GroupThreads(1)
     public void Benchmark_2A_profileAddFirstLinkedList(LinkedListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
@@ -130,6 +134,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g3")
+    @GroupThreads(1)
     public void Benchmark_3A_profileAddFirstArrayList(ArrayListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
@@ -143,6 +148,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g4")
+    @GroupThreads(1)
     public void Benchmark_4A_profileAddFirstTreeList(TreeListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
@@ -150,6 +156,131 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
  
+    
+    //// profileAddLast ///////////////////////////////////////////////////////
+    @Benchmark
+//    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+//    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+//    @Fork(0)
+    @Group(value = "g1")
+//    @GroupThreads(1)
+    public void Benchmark_1A_profileAddLastRoddeList(
+            IndexedLinkedListState state) {
+        
+        profileAddLast(state.list,
+                       ADD_LAST_OPERATIONS, 
+                       state.random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(0)
+    @Group(value = "g2")
+    @GroupThreads(1)
+    public void Benchmark_2A_profileAddLastLinkedList(LinkedListState state) {
+        profileAddLast(state.list,
+                       ADD_LAST_OPERATIONS, 
+                       state.random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(0)
+    @Group(value = "g3")
+    @GroupThreads(1)
+    public void Benchmark_3A_profileAddLastArrayList(ArrayListState state) {
+        profileAddLast(state.list,
+                       ADD_LAST_OPERATIONS, 
+                       state.random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(0)
+    @Group(value = "g4")
+    @GroupThreads(1)
+    public void Benchmark_4A_profileAddLastTreeList(TreeListState state) {
+        profileAddLast(state.list,
+                       ADD_LAST_OPERATIONS, 
+                       state.random);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
+    
+    //// profileGet ////////////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(0)
+    @Group(value = "g1")
+    @GroupThreads(1)
+    public void Benchmark_1B_profileGetRoddeList(IndexedLinkedListState state,
+                                                 Blackhole blackhole) {
+        profileGet(state.list,
+                   GET_OPERATIONS,
+                   state.random, 
+                   blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(1)
+    @Group(value = "g2")
+    @GroupThreads(1)
+    public void Benchmark_2B_profileGetArrayList(ArrayListState state,
+                                                 Blackhole blackhole) {
+        profileGet(state.list, 
+                   GET_OPERATIONS, 
+                   state.random, 
+                   blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(1)
+    @Group(value = "g3")
+    @GroupThreads(1)
+    public void Benchmark_3B_profileGetLinkedList(LinkedListState state,
+                                                  Blackhole blackhole) {
+        profileGet(state.list, 
+                   GET_OPERATIONS,  
+                   state.random, 
+                   blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(0)
+    @Group(value = "g4")
+    @GroupThreads(1)
+    public void Benchmark_4B_profileGetTreeList(TreeListState state, 
+                                                Blackhole blackhole) {
+        profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
     
     //// profileAddLast ////////////////////////////////////////////////////////
     /*
@@ -359,65 +490,6 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
     */
-    
-    //// profileGet ////////////////////////////////////////////////////////////
-    @Benchmark
-    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Fork(0)
-    @Group(value = "g1")
-    public void Benchmark_1B_profileGetRoddeList(IndexedLinkedListState state,
-                                         Blackhole blackhole) {
-        profileGet(state.list,
-                   GET_OPERATIONS,
-                   state.random, 
-                   blackhole);
-    }
-    
-    @Benchmark
-    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Fork(0)
-    @Group(value = "g2")
-    public void Benchmark_2B_profileGetArrayList(ArrayListState state,
-                                         Blackhole blackhole) {
-        profileGet(state.list, 
-                   GET_OPERATIONS, 
-                   state.random, 
-                   blackhole);
-    }
-    
-    @Benchmark
-    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Fork(0)
-    @Group(value = "g3")
-    public void Benchmark_3B_profileGetLinkedList(LinkedListState state,
-                                          Blackhole blackhole) {
-        profileGet(state.list, 
-                   GET_OPERATIONS,  
-                   state.random, 
-                   blackhole);
-    }
-    
-    @Benchmark
-    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1)
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    @Fork(0)
-    @Group(value = "g4")
-    public void Benchmark_4B_profileGetTreeList(TreeListState state, 
-                                        Blackhole blackhole) {
-        profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
-    }
-    ////////////////////////////////////////////////////////////////////////////
     
     
     public static void main(String[] args) throws Exception {
