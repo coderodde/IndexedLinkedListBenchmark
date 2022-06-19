@@ -25,7 +25,6 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-@State(Scope.Benchmark)
 public class IndexedLinkedListPerformance {
 
     private static final int ADD_FIRST_OPERATIONS           = 20_000;
@@ -43,24 +42,26 @@ public class IndexedLinkedListPerformance {
     
     private static final long seed = System.currentTimeMillis();
     
-    @State(Scope.Benchmark)
+    
+    
+    @State(Scope.Thread)
     public static class IndexedLinkedListState {
         public List<Integer> list;
         public Random random;
         
-        @Setup(Level.Trial)
+        @Setup(Level.Iteration)
         public void setup() {
             list = new IndexedLinkedList<>();
             random = new Random(seed);
         }
     }
     
-    @State(Scope.Benchmark)
+    @State(Scope.Thread)
     public static class ArrayListState {
         public List<Integer> list;
         public Random random;
         
-        @Setup(Level.Trial)
+        @Setup(Level.Iteration)
         public void setup() {
             list = new ArrayList<>();
             random = new Random(seed);
@@ -116,7 +117,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g2")
-    public void Benchmark_2B_profileAddFirstLinkedList(LinkedListState state) {
+    public void Benchmark_2A_profileAddFirstLinkedList(LinkedListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
                         state.random);
@@ -129,7 +130,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g3")
-    public void Benchmark_3B_profileAddFirstArrayList(ArrayListState state) {
+    public void Benchmark_3A_profileAddFirstArrayList(ArrayListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
                         state.random);
@@ -142,7 +143,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g4")
-    public void Benchmark_4B_profileAddFirstTreeList(TreeListState state) {
+    public void Benchmark_4A_profileAddFirstTreeList(TreeListState state) {
         profileAddFirst(state.list, 
                         ADD_FIRST_OPERATIONS, 
                         state.random);
@@ -382,7 +383,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g2")
-    public void Benchmark_2A_profileGetArrayList(ArrayListState state,
+    public void Benchmark_2B_profileGetArrayList(ArrayListState state,
                                          Blackhole blackhole) {
         profileGet(state.list, 
                    GET_OPERATIONS, 
@@ -397,7 +398,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g3")
-    public void Benchmark_3A_profileGetLinkedList(LinkedListState state,
+    public void Benchmark_3B_profileGetLinkedList(LinkedListState state,
                                           Blackhole blackhole) {
         profileGet(state.list, 
                    GET_OPERATIONS,  
@@ -412,7 +413,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(0)
     @Group(value = "g4")
-    public void Benchmark_4A_profileGetTreeList(TreeListState state, 
+    public void Benchmark_4B_profileGetTreeList(TreeListState state, 
                                         Blackhole blackhole) {
         profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
     }
@@ -428,7 +429,8 @@ public class IndexedLinkedListPerformance {
                 .measurementIterations(1)
                 .measurementTime(TimeValue.seconds(2L))
                 .jvmArgsPrepend("-server", "-Xms7G", "-Xmx7G")
-                .forks(1)
+                .shouldDoGC(true)
+                .threadGroups(1)
                 .timeUnit(TimeUnit.MILLISECONDS)
                 .syncIterations(true)
                 .threads(1)
