@@ -29,10 +29,10 @@ public class IndexedLinkedListPerformance {
 
     private static final int ADD_FIRST_OPERATIONS           = 20_000;
     private static final int ADD_LAST_OPERATIONS            = 20_000;
-    private static final int ADD_INDEX_SIZE                 = 20_000;
     private static final int ADD_AT_OPERATIONS              = 10_000;
     private static final int ADD_COLLECTION_AT_OPERATIONS   = 2_000;
     private static final int ADD_COLLECTION_OPERATIONS      = 4_000;
+    private static final int ADD_INDEX_SIZE                 = 20_000;
     private static final int REMOVE_VIA_INDEX_OPERATIONS    = 10_000;
     private static final int REMOVE_OBJECT_OPERATIONS       = 5_000;
     private static final int GET_OPERATIONS                 = 10_000;
@@ -44,157 +44,7 @@ public class IndexedLinkedListPerformance {
     
     private static final long seed = System.currentTimeMillis();
     
-    //// addFirst //////////////////////////////////////////////////////////////
-    @State(Scope.Benchmark)
-    public static class IndexedLinkedListStateAddFirst {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new IndexedLinkedList<>();
-            random = new Random(seed);
-        }
-    }
     
-    @State(Scope.Benchmark)
-    public static class ArrayListStateAddFirst {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class LinkedListStateAddFirst {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class TreeListStateAddFirst {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    
-    
-    //// addLast //////////////////////////////////////////////////////////////
-    @State(Scope.Benchmark)
-    public static class IndexedLinkedListStateAddLast {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new IndexedLinkedList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class ArrayListStateAddLast {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class LinkedListStateAddLast {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class TreeListStateAddLast {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    
-    
-    //// addAtIndex ////////////////////////////////////////////////////////////
-    @State(Scope.Benchmark)
-    public static class IndexedLinkedListStateAddAtIndex {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new IndexedLinkedList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class ArrayListStateAddAtIndex {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class LinkedListStateAddAtIndex {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class TreeListStateAddAtIndex {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////
     
     
     //// addCollection /////////////////////////////////////////////////////////
@@ -229,7 +79,7 @@ public class IndexedLinkedListPerformance {
         
         @Setup(Level.Trial)
         public void setup() {
-            list = new ArrayList<>();
+            list = new LinkedList<>();
             random = new Random(seed);
         }
     }
@@ -241,7 +91,7 @@ public class IndexedLinkedListPerformance {
         
         @Setup(Level.Trial)
         public void setup() {
-            list = new ArrayList<>();
+            list = new TreeList<>();
             random = new Random(seed);
         }
     }
@@ -288,7 +138,7 @@ public class IndexedLinkedListPerformance {
         
         @Setup(Level.Trial)
         public void setup() {
-            list = new ArrayList<>();
+            list = new LinkedList<>();
             random = new Random(seed);
             
             for (int i = 0; i < GET_SIZE; ++i) {
@@ -375,12 +225,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileRoddeListAddFirst(
-            IndexedLinkedListStateAddFirst state) {
-        
-        profileAddFirst(state.list,
-                        ADD_FIRST_OPERATIONS, 
-                        state.random);
+    public void profileRoddeListAddFirst() {
+        profileAddFirst(new IndexedLinkedList<>(), ADD_FIRST_OPERATIONS);
     }
     
     @Benchmark
@@ -389,10 +235,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddFirst(LinkedListStateAddFirst state) {
-        profileAddFirst(state.list, 
-                        ADD_FIRST_OPERATIONS, 
-                        state.random);
+    public void profileLinkedListAddFirst() {
+        profileAddFirst(new LinkedList<>(), ADD_FIRST_OPERATIONS);
     }
     
     @Benchmark
@@ -401,10 +245,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileArrayListAddFirst(ArrayListStateAddFirst state) {
-        profileAddFirst(state.list, 
-                        ADD_FIRST_OPERATIONS, 
-                        state.random);
+    public void profileArrayListAddFirst() {
+        profileAddFirst(new ArrayList<>(), ADD_FIRST_OPERATIONS);
     }
     
     @Benchmark
@@ -413,10 +255,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileTreeListAddFirst(TreeListStateAddFirst state) {
-        profileAddFirst(state.list, 
-                        ADD_FIRST_OPERATIONS, 
-                        state.random);
+    public void profileTreeListAddFirst() {
+        profileAddFirst(new TreeList<>(), ADD_FIRST_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
  
@@ -428,12 +268,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileRoddeListAddLast(
-            IndexedLinkedListStateAddLast state) {
-        
-        profileAddLast(state.list,
-                       ADD_LAST_OPERATIONS, 
-                       state.random);
+    public void profileRoddeListAddLast() {
+        profileAddLast(new IndexedLinkedList<>(), ADD_LAST_OPERATIONS);
     }
     
     @Benchmark
@@ -442,11 +278,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddLast(LinkedListStateAddLast state) {
-        
-        profileAddLast(state.list, 
-                       ADD_LAST_OPERATIONS, 
-                       state.random);
+    public void profileLinkedListAddLast() {
+        profileAddLast(new LinkedList<>(), ADD_LAST_OPERATIONS);
     }
     
     @Benchmark
@@ -455,10 +288,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileArrayListAddLast(ArrayListStateAddLast state) {
-        profileAddLast(state.list, 
-                       ADD_LAST_OPERATIONS, 
-                       state.random);
+    public void profileArrayListAddLast() {
+        profileAddLast(new ArrayList<>(), ADD_LAST_OPERATIONS);
     }
     
     @Benchmark
@@ -467,10 +298,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileTreeListAddLast(TreeListStateAddLast state) {
-        profileAddLast(state.list, 
-                       ADD_LAST_OPERATIONS, 
-                       state.random);
+    public void profileTreeListAddLast() {
+        profileAddLast(new TreeList<>(), ADD_LAST_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
  
@@ -482,12 +311,9 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileRoddeListAddAtIndex(
-            IndexedLinkedListStateAddAtIndex state) {
+    public void profileRoddeListAddAtIndex() {
+        profileAddAtIndex(new IndexedLinkedList<>(), ADD_AT_OPERATIONS);
         
-        profileAddLast(state.list,
-                       ADD_AT_OPERATIONS,
-                       state.random);
     }
     
     @Benchmark
@@ -496,10 +322,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddAtIndex(LinkedListStateAddAtIndex state) {
-        profileAddLast(state.list, 
-                       ADD_AT_OPERATIONS, 
-                       state.random);
+    public void profileLinkedListAddAtIndex() {
+        profileAddAtIndex(new LinkedList<>(), ADD_AT_OPERATIONS);
     }
     
     @Benchmark
@@ -508,10 +332,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileArrayListAddAtIndex(ArrayListStateAddAtIndex state) {
-        profileAddLast(state.list, 
-                       ADD_AT_OPERATIONS, 
-                       state.random);
+    public void profileArrayListAddAtIndex() {
+        profileAddAtIndex(new ArrayList<>(), ADD_AT_OPERATIONS);
     }
     
     @Benchmark
@@ -520,10 +342,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileTreeListAddAtIndex(TreeListStateAddAtIndex state) {
-        profileAddLast(state.list, 
-                       ADD_AT_OPERATIONS, 
-                       state.random);
+    public void profileTreeListAddAtIndex() {
+        profileAddAtIndex(new TreeList<>(), ADD_AT_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
  
@@ -774,21 +594,19 @@ public class IndexedLinkedListPerformance {
     }
     
     // private methods:
-    private void profileAddFirst(List<Integer> list,
-                                 int operations, 
-                                 Random random) {
+    private void profileAddFirst(List<Integer> list, int operations) {
         for (int i = 0; i < operations; i++) {
-            list.add(0, getRandomInteger(random));
+            list.add(0, i);
         }
     }
     
-    private void profileAddLast(List<Integer> list,
-                                int operations,
-                                Random random) {
+    private void profileAddLast(List<Integer> list, int operations) {
         for (int i = 0; i < operations; i++) {
-            list.add(list.size(), getRandomInteger(random));
+            list.add(i);
         }
     }
+    
+    
     
     private void profileAddCollection(List<Integer> list,
                                       int operations, 
@@ -799,9 +617,9 @@ public class IndexedLinkedListPerformance {
         }
     }
     
-    private void profileAddAtIndex(List<Integer> list,
-                                   int operations,
-                                   Random random) {
+    private void profileAddAtIndex(List<Integer> list, int operations) {
+        Random random = new Random(seed + 1L);
+        
         for (int i = 0; i < operations; i++) {
             int index = random.nextInt(list.size() + 1);
             Integer value = getRandomInteger(random);
