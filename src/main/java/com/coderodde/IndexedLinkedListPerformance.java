@@ -47,56 +47,6 @@ public class IndexedLinkedListPerformance {
     
     
     
-    //// addCollection /////////////////////////////////////////////////////////
-    @State(Scope.Benchmark)
-    public static class IndexedLinkedListStateAddCollection {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new IndexedLinkedList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class ArrayListStateAddCollection {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new ArrayList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class LinkedListStateAddCollection {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new LinkedList<>();
-            random = new Random(seed);
-        }
-    }
-    
-    @State(Scope.Benchmark)
-    public static class TreeListStateAddCollection {
-        public List<Integer> list;
-        public Random random;
-        
-        @Setup(Level.Trial)
-        public void setup() {
-            list = new TreeList<>();
-            random = new Random(seed);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    
     
     //// get ///////////////////////////////////////////////////////////////////
     @State(Scope.Benchmark)
@@ -348,6 +298,117 @@ public class IndexedLinkedListPerformance {
     ////////////////////////////////////////////////////////////////////////////
  
     
+    //// profileAddCollection //////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new IndexedLinkedList<>(),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new LinkedList<>(),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new ArrayList<>(),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new TreeList<>(),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+ 
+    
+    //// profileAddCollection //////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new IndexedLinkedList<>(),
+                                    ADD_COLLECTION_OPERATIONS, 
+                                    random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new LinkedList<>(),
+                                    ADD_COLLECTION_OPERATIONS, 
+                                    random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new ArrayList<>(),
+                                    ADD_COLLECTION_OPERATIONS, 
+                                    random);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new TreeList<>(),
+                                    ADD_COLLECTION_OPERATIONS, 
+                                    random);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+ 
+    
+    
     //// profileAddCollectionToTail ////////////////////////////////////////////
 //    @Benchmark
 //    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -453,7 +514,6 @@ public class IndexedLinkedListPerformance {
         profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
     
     /*
     //// AddCollection /////////////////////////////////////////////////////////
@@ -606,14 +666,22 @@ public class IndexedLinkedListPerformance {
         }
     }
     
-    
-    
     private void profileAddCollection(List<Integer> list,
                                       int operations, 
                                       Random random) {
         for (int i = 0; i < operations; ++i) {
             List<Integer> col = getCollection(random);
             list.addAll(col);
+        }
+    }
+    
+    private void profileAddCollectionAtIndex(List<Integer> list,
+                                             int operations, 
+                                             Random random) {
+        for (int i = 0; i < operations; ++i) {
+            List<Integer> col = getCollection(random);
+            int index = random.nextInt(list.size() + 1);
+            list.addAll(index, col);
         }
     }
     
@@ -624,17 +692,6 @@ public class IndexedLinkedListPerformance {
             int index = random.nextInt(list.size() + 1);
             Integer value = getRandomInteger(random);
             list.add(index, value);
-        }
-    }
-    
-    private void profileAddCollectionAtIndex(List<Integer> list,
-                                             int operations,
-                                             Random random) {
-        
-        for (int i = 0; i < operations; i++) {
-            List<Integer> collection = createRandomCollection(random);
-            int index = random.nextInt(list.size() + 1);
-            list.addAll(index, collection);
         }
     }
     
