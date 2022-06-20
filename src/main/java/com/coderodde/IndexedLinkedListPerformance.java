@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import com.github.coderodde.util.IndexedLinkedList;
+import java.util.Deque;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -19,6 +20,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -32,23 +34,18 @@ public class IndexedLinkedListPerformance {
     private static final int ADD_AT_OPERATIONS              = 10_000;
     private static final int ADD_COLLECTION_AT_OPERATIONS   = 2_000;
     private static final int ADD_COLLECTION_OPERATIONS      = 4_000;
-    private static final int ADD_INDEX_SIZE                 = 20_000;
-    private static final int REMOVE_VIA_INDEX_OPERATIONS    = 10_000;
-    private static final int REMOVE_OBJECT_OPERATIONS       = 5_000;
+    private static final int REMOVE_COLLECTION_SIZE         = 50_000;
+    private static final int REMOVE_OBJECT_OPERATIONS       = 15_000;
+    private static final int GET_SIZE                       = 25_000;
     private static final int GET_OPERATIONS                 = 10_000;
-    private static final int GET_SIZE   = 25_000;
-    private static final int REMOVE_FIRST_OPERATIONS        = 5_000;
+    
     
     private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
     
     private static final long seed = System.currentTimeMillis();
     
-    
-    
-    
-    
-    //// get ///////////////////////////////////////////////////////////////////
+    //// State get /////////////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateGet {
         public List<Integer> list;
@@ -114,9 +111,10 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
     
-    //// addCollectionAtIndex //////////////////////////////////////////////////
+    
+    //// State removeFirst /////////////////////////////////////////////////////
     @State(Scope.Benchmark)
-    public static class IndexedLinkedListStateAddCollectionAtIndex {
+    public static class IndexedLinkedListStateRemoveFirst {
         public List<Integer> list;
         public Random random;
         
@@ -124,11 +122,15 @@ public class IndexedLinkedListPerformance {
         public void setup() {
             list = new IndexedLinkedList<>();
             random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
         }
     }
     
     @State(Scope.Benchmark)
-    public static class ArrayListStateAddCollectionAtIndex {
+    public static class ArrayListStateRemoveFirst {
         public List<Integer> list;
         public Random random;
         
@@ -136,11 +138,15 @@ public class IndexedLinkedListPerformance {
         public void setup() {
             list = new ArrayList<>();
             random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
         }
     }
     
     @State(Scope.Benchmark)
-    public static class LinkedListStateAddCollectionAtIndex {
+    public static class LinkedListStateRemoveFirst {
         public List<Integer> list;
         public Random random;
         
@@ -148,11 +154,15 @@ public class IndexedLinkedListPerformance {
         public void setup() {
             list = new LinkedList<>();
             random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
         }
     }
     
     @State(Scope.Benchmark)
-    public static class TreeListStateAddCollectionAtIndex {
+    public static class TreeListStateRemoveFirst {
         public List<Integer> list;
         public Random random;
         
@@ -160,10 +170,215 @@ public class IndexedLinkedListPerformance {
         public void setup() {
             list = new TreeList<>();
             random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
         }
     }
     ////////////////////////////////////////////////////////////////////////////
     
+    
+    //// State removeFirst /////////////////////////////////////////////////////
+    @State(Scope.Benchmark)
+    public static class IndexedLinkedListStateRemoveLast {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new IndexedLinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class ArrayListStateRemoveLast {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new ArrayList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class LinkedListStateRemoveLast {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new LinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class TreeListStateRemoveLast {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new TreeList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// State removeAt ////////////////////////////////////////////////////////
+    @State(Scope.Benchmark)
+    public static class IndexedLinkedListStateRemoveAt {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new IndexedLinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class ArrayListStateRemoveAt {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new ArrayList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class LinkedListStateRemoveAt {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new LinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class TreeListStateRemoveAt {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new TreeList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
+    
+    //// State removeObject ////////////////////////////////////////////////////
+    @State(Scope.Benchmark)
+    public static class IndexedLinkedListStateRemoveObject {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new IndexedLinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class ArrayListStateRemoveObject {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new ArrayList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class LinkedListStateRemoveObject {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new LinkedList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    
+    @State(Scope.Benchmark)
+    public static class TreeListStateRemoveObject {
+        public List<Integer> list;
+        public Random random;
+        
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new TreeList<>();
+            random = new Random(seed);
+            
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
     private static Integer getRandomInteger(Random random) {
         return random.nextInt(MAXIMUM_INTEGER + 1);
     }
@@ -196,6 +411,7 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
     public void profileArrayListAddFirst() {
+        System.out.println(System.getProperty("file.encoding"));
         profileAddFirst(new ArrayList<>(), ADD_FIRST_OPERATIONS);
     }
     
@@ -353,7 +569,7 @@ public class IndexedLinkedListPerformance {
     ////////////////////////////////////////////////////////////////////////////
  
     
-    //// profileAddCollection //////////////////////////////////////////////////
+    //// profileAddCollectionAtIndex ///////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -363,7 +579,7 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListAddCollectionAtIndex() {
         Random random = new Random(seed + 2);
         profileAddCollectionAtIndex(new IndexedLinkedList<>(),
-                                    ADD_COLLECTION_OPERATIONS, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
     
@@ -376,7 +592,7 @@ public class IndexedLinkedListPerformance {
     public void profileLinkedListAddCollectionAtIndex() {
         Random random = new Random(seed + 2);
         profileAddCollectionAtIndex(new LinkedList<>(),
-                                    ADD_COLLECTION_OPERATIONS, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
     
@@ -389,7 +605,7 @@ public class IndexedLinkedListPerformance {
     public void profileArrayListAddCollectionAtIndex() {
         Random random = new Random(seed + 2);
         profileAddCollectionAtIndex(new ArrayList<>(),
-                                    ADD_COLLECTION_OPERATIONS, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
     
@@ -402,12 +618,226 @@ public class IndexedLinkedListPerformance {
     public void profileTreeListAddCollectionAtIndex() {
         Random random = new Random(seed + 2);
         profileAddCollectionAtIndex(new TreeList<>(),
-                                    ADD_COLLECTION_OPERATIONS, 
+                                    ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
     ////////////////////////////////////////////////////////////////////////////
  
     
+    //// profileRemoveAt ///////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListRemoveAtIndex(
+            IndexedLinkedListStateRemoveAt state,
+            Blackhole blackhole) {
+        
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListRemoveAtIndex(LinkedListStateRemoveAt state,
+                                               Blackhole blackhole) {
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListRemoveAtIndex(ArrayListStateRemoveAt state,
+                                              Blackhole blackhole) {
+        
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListRemoveAtIndex(TreeListStateRemoveAt state, 
+                                             Blackhole blackhole) {
+        
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// profileRemoveObject ///////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListRemoveObject(
+            IndexedLinkedListStateRemoveObject state,
+            Blackhole blackhole) {
+        
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListRemoveObject(LinkedListStateRemoveObject state,
+                                              Blackhole blackhole) {
+        
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListRemoveObject(ArrayListStateRemoveObject state,
+                                             Blackhole blackhole) {
+        
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListRemoveObject(TreeListStateRemoveObject state, 
+                                            Blackhole blackhole) {
+        
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// profileRemoveFirst ////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListRemoveFirst(
+            IndexedLinkedListStateRemoveFirst state,
+            Blackhole blackhole) {
+        
+        profileRemoveFirst(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListRemoveFirst(LinkedListStateRemoveFirst state,
+                                              Blackhole blackhole) {
+        
+        profileRemoveFirst(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListRemoveFirst(ArrayListStateRemoveFirst state,
+                                            Blackhole blackhole) {
+        
+        profileRemoveFirst(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListRemoveFirst(TreeListStateRemoveFirst state, 
+                                           Blackhole blackhole) {
+        
+        profileRemoveFirst(state.list, blackhole);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    
+    //// profileRemoveLast /////////////////////////////////////////////////////
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileRoddeListRemoveLast(
+            IndexedLinkedListStateRemoveLast state,
+            Blackhole blackhole) {
+        
+        profileRemoveLast(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileLinkedListRemoveLast(LinkedListStateRemoveLast state,
+                                            Blackhole blackhole) {
+        
+        profileRemoveLast(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileArrayListRemoveLast(ArrayListStateRemoveLast state,
+                                           Blackhole blackhole) {
+        
+        profileRemoveLast(state.list, blackhole);
+    }
+    
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileTreeListRemoveLast(TreeListStateRemoveLast state, 
+                                          Blackhole blackhole) {
+        
+        profileRemoveLast(state.list, blackhole);
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
     
     //// profileAddCollectionToTail ////////////////////////////////////////////
 //    @Benchmark
@@ -635,22 +1065,9 @@ public class IndexedLinkedListPerformance {
                 .shouldDoGC(true)
                 .timeUnit(TimeUnit.MILLISECONDS)
                 .syncIterations(false)
-//                .threads(1)
                 .build();
         
         new Runner(opt).run();
-    }
-    
-    private static List<Integer> createRandomCollection(Random random) {
-        int size = 1 + random.nextInt(MAXIMUM_COLLECTION_SIZE);
-
-        List<Integer> list = new ArrayList<>(size);
-
-        for (int i = 0; i < size; i++) {
-            list.add(getRandomInteger(random));
-        }
-
-        return list;
     }
     
     // private methods:
@@ -682,6 +1099,58 @@ public class IndexedLinkedListPerformance {
             List<Integer> col = getCollection(random);
             int index = random.nextInt(list.size() + 1);
             list.addAll(index, col);
+        }
+    }
+    
+    private void profileRemoveAt(List<Integer> list,
+                                 Random random, 
+                                 Blackhole blackhole) {
+        while (!list.isEmpty()) {
+            int index = random.nextInt(list.size());
+            Integer i = list.remove(index);
+            blackhole.consume(i);
+        }
+    }
+    
+    private void profileRemoveObject(List<Integer> list,
+                                     Random random, 
+                                     Blackhole blackhole) {
+        for (int i = 0; i < REMOVE_OBJECT_OPERATIONS; ++i) {
+            Integer value = random.nextInt(REMOVE_COLLECTION_SIZE);
+            list.remove((Object) value);
+            blackhole.consume(value);
+        }
+    }
+    
+    private void profileRemoveFirst(List<Integer> list, Blackhole blackhole) {
+        if (list instanceof Deque) {
+            Deque<Integer> deque = (Deque<Integer>) list;
+            
+            while (!deque.isEmpty()) {
+                Integer num = deque.removeFirst();
+                blackhole.consume(num);
+            }
+        } else {
+            while (!list.isEmpty()) {
+                Integer num = list.remove(0);
+                blackhole.consume(num);
+            }
+        }
+    }
+    
+    private void profileRemoveLast(List<Integer> list, Blackhole blackhole) {
+        if (list instanceof Deque) {
+            Deque<Integer> deque = (Deque<Integer>) list;
+            
+            while (!deque.isEmpty()) {
+                Integer num = deque.removeLast();
+                blackhole.consume(num);
+            }
+        } else {
+            while (!list.isEmpty()) {
+                Integer num = list.remove(list.size() - 1);
+                blackhole.consume(num);
+            }
         }
     }
     
