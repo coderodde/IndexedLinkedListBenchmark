@@ -34,18 +34,20 @@ import org.openjdk.jmh.runner.options.TimeValue;
 @State(Scope.Thread)
 public class IndexedLinkedListPerformance {
 
-    private static final int ADD_FIRST_OPERATIONS           = 20_000;
-    private static final int ADD_LAST_OPERATIONS            = 20_000;
-    private static final int ADD_AT_OPERATIONS              = 10_000;
-    private static final int ADD_COLLECTION_AT_OPERATIONS   = 2_000;
-    private static final int ADD_COLLECTION_OPERATIONS      = 4_000;
-    private static final int REMOVE_COLLECTION_SIZE         = 50_000;
+    private static final int ADD_FIRST_OPERATIONS           = 100_000;
+    private static final int ADD_LAST_OPERATIONS            = 100_000;
+    private static final int ADD_AT_OPERATIONS              = 40_000;
+    private static final int ADD_COLLECTION_AT_OPERATIONS   = 10_000;
+    private static final int ADD_COLLECTION_OPERATIONS      = 20_000;
+    private static final int REMOVE_COLLECTION_SIZE         = 100_000;
     private static final int REMOVE_OBJECT_OPERATIONS       = 15_000;
-    private static final int GET_SIZE                       = 25_000;
-    private static final int GET_OPERATIONS                 = 10_000;
-    private static final int CLEAR_LIST_SIZE                = 100_000;
-    private static final int CLEAR_RANGE_SIZE               = 90_000;
-    private static final int SORT_LIST_SIZE                 = 100_000;
+    private static final int REMOVE_ALL_SIZE                = 100_000;
+    private static final int REMOEVE_COLLECTION_CAPACITY    = 20_000;
+    private static final int GET_SIZE                       = 50_000;
+    private static final int GET_OPERATIONS                 = 50_000;
+    private static final int CLEAR_LIST_SIZE                = 1_000_000;
+    private static final int CLEAR_RANGE_SIZE               = 990_000;
+    private static final int SORT_LIST_SIZE                 = 1_000_000;
     
     private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
@@ -470,7 +472,7 @@ public class IndexedLinkedListPerformance {
     ////////////////////////////////////////////////////////////////////////////
 
     
-    //// State removeRange /////////////////////////////////////////////////////
+    //// State sortRange ///////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateSortRange {
         public List<Integer> list;
@@ -1398,6 +1400,17 @@ public class IndexedLinkedListPerformance {
     
     private void profileSort(List<Integer> list) {
         list.subList(10, list.size() - 10).sort(Integer::compare);
+    }
+    
+    private void profileRemoveAll(List<Integer> list, 
+                                  Collection<Integer> toRemove) {
+        if (list instanceof TreeList || list instanceof LinkedList) {
+            for (Integer i : toRemove) {
+                list.remove(i);
+            }
+        } else {
+            list.removeAll(toRemove);
+        }
     }
     
     private static List<Integer> getCollection(Random random) {
