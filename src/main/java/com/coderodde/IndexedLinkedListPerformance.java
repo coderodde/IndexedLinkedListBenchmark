@@ -37,20 +37,53 @@ import org.openjdk.jmh.runner.options.TimeValue;
 @State(Scope.Thread)
 public class IndexedLinkedListPerformance {
 
-    private static final int ADD_FIRST_OPERATIONS           = 1_000;
-    private static final int ADD_LAST_OPERATIONS            = 1_000;
-    private static final int ADD_AT_OPERATIONS              = 1_000;
-    private static final int ADD_COLLECTION_AT_OPERATIONS   = 1_000;
-    private static final int ADD_COLLECTION_OPERATIONS      = 1_000;
-    private static final int REMOVE_COLLECTION_SIZE         = 10_000;
-    private static final int REMOVE_OBJECT_OPERATIONS       = 1_000;
-    private static final int REMOVE_ALL_SIZE                = 10_000;
-    private static final int REMOEVE_COLLECTION_CAPACITY    = 2_000;
-    private static final int GET_SIZE                       = 10_000;
-    private static final int GET_OPERATIONS                 = 1_000;
-    private static final int CLEAR_LIST_SIZE                = 50_000;
-    private static final int CLEAR_RANGE_SIZE               = 49_000;
-    private static final int SORT_LIST_SIZE                 = 10_000;
+    // Small data:
+//    private static final int ADD_FIRST_OPERATIONS           = 1_000;
+//    private static final int ADD_LAST_OPERATIONS            = 1_000;
+//    private static final int ADD_AT_OPERATIONS              = 1_000;
+//    private static final int ADD_COLLECTION_AT_OPERATIONS   = 1_000;
+//    private static final int ADD_COLLECTION_OPERATIONS      = 1_000;
+//    private static final int REMOVE_COLLECTION_SIZE         = 10_000;
+//    private static final int REMOVE_OBJECT_OPERATIONS       = 1_000;
+//    private static final int REMOVE_ALL_SIZE                = 10_000;
+//    private static final int REMOEVE_COLLECTION_CAPACITY    = 2_000;
+//    private static final int GET_SIZE                       = 10_000;
+//    private static final int GET_OPERATIONS                 = 1_000;
+//    private static final int CLEAR_LIST_SIZE                = 50_000;
+//    private static final int CLEAR_RANGE_SIZE               = 49_000;
+//    private static final int SORT_LIST_SIZE                 = 10_000;
+
+    // Medium size data:
+//    private static final int ADD_FIRST_OPERATIONS           = 3_000;
+//    private static final int ADD_LAST_OPERATIONS            = 3_000;
+//    private static final int ADD_AT_OPERATIONS              = 3_000;
+//    private static final int ADD_COLLECTION_AT_OPERATIONS   = 3_000;
+//    private static final int ADD_COLLECTION_OPERATIONS      = 3_000;
+//    private static final int REMOVE_COLLECTION_SIZE         = 30_000;
+//    private static final int REMOVE_OBJECT_OPERATIONS       = 3_000;
+//    private static final int REMOVE_ALL_SIZE                = 30_000;
+//    private static final int REMOEVE_COLLECTION_CAPACITY    = 6_000;
+//    private static final int GET_SIZE                       = 30_000;
+//    private static final int GET_OPERATIONS                 = 3_000;
+//    private static final int CLEAR_LIST_SIZE                = 100_000;
+//    private static final int CLEAR_RANGE_SIZE               = 99_000;
+//    private static final int SORT_LIST_SIZE                 = 50_000;
+    
+    // Larger data:
+    private static final int ADD_FIRST_OPERATIONS           = 5_000;
+    private static final int ADD_LAST_OPERATIONS            = 5_000;
+    private static final int ADD_AT_OPERATIONS              = 5_000;
+    private static final int ADD_COLLECTION_AT_OPERATIONS   = 5_000;
+    private static final int ADD_COLLECTION_OPERATIONS      = 5_000;
+    private static final int REMOVE_COLLECTION_SIZE         = 50_000;
+    private static final int REMOVE_OBJECT_OPERATIONS       = 5_000;
+    private static final int REMOVE_ALL_SIZE                = 50_000;
+    private static final int REMOEVE_COLLECTION_CAPACITY    = 10_000;
+    private static final int GET_SIZE                       = 50_000;
+    private static final int GET_OPERATIONS                 = 5_000;
+    private static final int CLEAR_LIST_SIZE                = 150_000;
+    private static final int CLEAR_RANGE_SIZE               = 149_000;
+    private static final int SORT_LIST_SIZE                 = 150_000;
 
     private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
@@ -1416,17 +1449,21 @@ public class IndexedLinkedListPerformance {
         });
         
         int index = 0;
-
+        
+        System.out.println(
+                "|                                         |          |");
+        
         for (RunResult rr : runResults) {
             Result result = rr.getPrimaryResult();
             String label = result.getLabel();
             double score = scoreMap.get(label);
             
-            System.out.printf("| %37s | %6.3f |\n", label, score);
+            System.out.printf("| %37s | %7.3f |\n", label, score);
             
             if (++index % 4 == 0) {
                 System.out.println(
-                        "|---------------------------------------|--------|");
+                    "|                                         |         |");
+                
             }
         }
 
@@ -1458,7 +1495,7 @@ public class IndexedLinkedListPerformance {
         }
 
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            System.out.printf("| %37s | %6.3f |\n", 
+            System.out.printf("| Total of %28s | %6.3f |\n", 
                               entry.getKey(), 
                               entry.getValue());
         }
