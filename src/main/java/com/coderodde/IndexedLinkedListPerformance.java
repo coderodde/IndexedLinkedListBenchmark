@@ -8,6 +8,7 @@ import com.github.coderodde.util.IndexedLinkedList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -50,295 +51,280 @@ public class IndexedLinkedListPerformance {
     private static final int CLEAR_LIST_SIZE                = 50_000;
     private static final int CLEAR_RANGE_SIZE               = 49_000;
     private static final int SORT_LIST_SIZE                 = 10_000;
-//
-//    private static final int ADD_FIRST_OPERATIONS           = 1_000_000;
-//    private static final int ADD_LAST_OPERATIONS            = 1_000_000;
-//    private static final int ADD_AT_OPERATIONS              = 40_000;
-//    private static final int ADD_COLLECTION_AT_OPERATIONS   = 10_000;
-//    private static final int ADD_COLLECTION_OPERATIONS      = 20_000;
-//    private static final int REMOVE_COLLECTION_SIZE         = 100_000;
-//    private static final int REMOVE_OBJECT_OPERATIONS       = 20_000;
-//    private static final int REMOVE_ALL_SIZE                = 100_000;
-//    private static final int REMOEVE_COLLECTION_CAPACITY    = 20_000;
-//    private static final int GET_SIZE                       = 50_000;
-//    private static final int GET_OPERATIONS                 = 50_000;
-//    private static final int CLEAR_LIST_SIZE                = 5_000_000;
-//    private static final int CLEAR_RANGE_SIZE               = 4_990_000;
-//    private static final int SORT_LIST_SIZE                 = 5_000_000;
-    
+
     private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
-    
+
     private static final long seed = System.currentTimeMillis();
-    
+
     //// State get /////////////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateGet {
         public List<Integer> list;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             random = new Random(seed);
-            
+
             for (int i = 0; i < GET_SIZE; ++i) {
                 list.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateGet {
         public List<Integer> list;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             random = new Random(seed);
-            
+
             for (int i = 0; i < GET_SIZE; ++i) {
                 list.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateGet {
         public List<Integer> list;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             random = new Random(seed);
-            
+
             for (int i = 0; i < GET_SIZE; ++i) {
                 list.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateGet {
         public List<Integer> list;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             random = new Random(seed);
-            
+
             for (int i = 0; i < GET_SIZE; ++i) {
                 list.add(i);
             }
         }
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// State removeFirst /////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveFirst {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveFirst {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveFirst {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveFirst {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// State removeLast //////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveLast {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveLast {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveLast {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveLast {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// State removeAt ////////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveAt {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveAt {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveAt {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveAt {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
@@ -346,74 +332,74 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    
+
     //// State removeObject ////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveObject {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveObject {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveObject {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveObject {
         public List<Integer> list;
         public List<Integer> contentList;
         public Random random;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
-            
+
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
                 contentList.add(i);
             }
@@ -421,66 +407,66 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    
+
     //// State removeRange /////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(CLEAR_LIST_SIZE);
-            
+
             for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(CLEAR_LIST_SIZE);
-            
+
             for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(CLEAR_LIST_SIZE);
-            
+
             for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(CLEAR_LIST_SIZE);
-            
+
             for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
@@ -488,187 +474,187 @@ public class IndexedLinkedListPerformance {
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    
+
     //// State sortRange ///////////////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateSortRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(SORT_LIST_SIZE);
-            
+
             for (int i = 0; i < SORT_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateSortRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(SORT_LIST_SIZE);
-            
+
             for (int i = 0; i < SORT_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateSortRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(SORT_LIST_SIZE);
-            
+
             for (int i = 0; i < SORT_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateSortRange {
         public List<Integer> list;
         public List<Integer> contentList;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(SORT_LIST_SIZE);
-            
+
             for (int i = 0; i < SORT_LIST_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
             Collections.shuffle(contentList, random);
         }
     }
     ////////////////////////////////////////////////////////////////////////////
 
-    
+
     //// State removeInCollection //////////////////////////////////////////////
     @State(Scope.Benchmark)
     public static class IndexedLinkedListStateRemoveInCollection {
         public List<Integer> list;
         public List<Integer> contentList;
         public Set<Integer> set;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new IndexedLinkedList<>();
             contentList = new ArrayList<>(REMOVE_ALL_SIZE);
             set = new HashSet<>();
-            
+
             for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
-            
+
             while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
                 set.add(random.nextInt(contentList.size() + 100));
             }
-            
+
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class ArrayListStateRemoveInCollection {
         public List<Integer> list;
         public List<Integer> contentList;
         public Set<Integer> set;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new ArrayList<>();
             contentList = new ArrayList<>(REMOVE_ALL_SIZE);
             set = new HashSet<>();
-            
+
             for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
-            
+
             while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
                 set.add(random.nextInt(contentList.size() + 100));
             }
-            
+
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class LinkedListStateRemoveInCollection {
         public List<Integer> list;
         public List<Integer> contentList;
         public Set<Integer> set;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new LinkedList<>();
             contentList = new ArrayList<>(REMOVE_ALL_SIZE);
             set = new HashSet<>();
-            
+
             for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
-            
+
             while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
                 set.add(random.nextInt(contentList.size() + 100));
             }
-            
+
             Collections.shuffle(contentList, random);
         }
     }
-    
+
     @State(Scope.Benchmark)
     public static class TreeListStateRemoveInCollection {
         public List<Integer> list;
         public List<Integer> contentList;
         public Set<Integer> set;
-        
+
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
             contentList = new ArrayList<>(REMOVE_ALL_SIZE);
             set = new HashSet<>();
-            
+
             for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
                 contentList.add(i);
             }
-            
+
             Random random = new Random(seed + 3);
-            
+
             while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
                 set.add(random.nextInt(contentList.size() + 100));
             }
-            
+
             Collections.shuffle(contentList, random);
         }
     }
@@ -677,7 +663,7 @@ public class IndexedLinkedListPerformance {
     private static Integer getRandomInteger(Random random) {
         return random.nextInt(MAXIMUM_INTEGER + 1);
     }
- 
+
     //// profileAddFirst ///////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -688,7 +674,7 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListAddFirst() {
         profileAddFirst(new IndexedLinkedList<>(), ADD_FIRST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -698,7 +684,7 @@ public class IndexedLinkedListPerformance {
     public void profileLinkedListAddFirst() {
         profileAddFirst(new LinkedList<>(), ADD_FIRST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -706,10 +692,10 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
     public void profileArrayListAddFirst() {
-        
+
         profileAddFirst(new ArrayList<>(), ADD_FIRST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -720,8 +706,8 @@ public class IndexedLinkedListPerformance {
         profileAddFirst(new TreeList<>(), ADD_FIRST_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
- 
-    
+
+
     //// profileAddLast ////////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -732,7 +718,7 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListAddLast() {
         profileAddLast(new IndexedLinkedList<>(), ADD_LAST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -742,7 +728,7 @@ public class IndexedLinkedListPerformance {
     public void profileLinkedListAddLast() {
         profileAddLast(new LinkedList<>(), ADD_LAST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -752,7 +738,7 @@ public class IndexedLinkedListPerformance {
     public void profileArrayListAddLast() {
         profileAddLast(new ArrayList<>(), ADD_LAST_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -763,8 +749,8 @@ public class IndexedLinkedListPerformance {
         profileAddLast(new TreeList<>(), ADD_LAST_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
- 
-    
+
+
     //// profileAddAtIndex ////////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -774,9 +760,9 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileRoddeListAddAtIndex() {
         profileAddAtIndex(new IndexedLinkedList<>(), ADD_AT_OPERATIONS);
-        
+
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -786,7 +772,7 @@ public class IndexedLinkedListPerformance {
     public void profileLinkedListAddAtIndex() {
         profileAddAtIndex(new LinkedList<>(), ADD_AT_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -796,7 +782,7 @@ public class IndexedLinkedListPerformance {
     public void profileArrayListAddAtIndex() {
         profileAddAtIndex(new ArrayList<>(), ADD_AT_OPERATIONS);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -807,8 +793,8 @@ public class IndexedLinkedListPerformance {
         profileAddAtIndex(new TreeList<>(), ADD_AT_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
- 
-    
+
+
     //// profileAddCollection //////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -822,7 +808,7 @@ public class IndexedLinkedListPerformance {
                              ADD_COLLECTION_OPERATIONS, 
                              random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -835,7 +821,7 @@ public class IndexedLinkedListPerformance {
                              ADD_COLLECTION_OPERATIONS, 
                              random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -848,7 +834,7 @@ public class IndexedLinkedListPerformance {
                              ADD_COLLECTION_OPERATIONS, 
                              random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -862,8 +848,8 @@ public class IndexedLinkedListPerformance {
                              random);
     }
     ////////////////////////////////////////////////////////////////////////////
- 
-    
+
+
     //// profileAddCollectionAtIndex ///////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -877,7 +863,7 @@ public class IndexedLinkedListPerformance {
                                     ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -890,7 +876,7 @@ public class IndexedLinkedListPerformance {
                                     ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -903,7 +889,7 @@ public class IndexedLinkedListPerformance {
                                     ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -917,8 +903,8 @@ public class IndexedLinkedListPerformance {
                                     random);
     }
     ////////////////////////////////////////////////////////////////////////////
- 
-    
+
+
     //// profileRemoveAt ///////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -929,15 +915,15 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListRemoveAtIndex(
             IndexedLinkedListStateRemoveAt state,
             Blackhole blackhole) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveAt(state.list,
                         state.random,
                         blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -948,12 +934,12 @@ public class IndexedLinkedListPerformance {
                                                Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveAt(state.list,
                         state.random,
                         blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -964,12 +950,12 @@ public class IndexedLinkedListPerformance {
                                               Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveAt(state.list,
                         state.random,
                         blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -980,14 +966,14 @@ public class IndexedLinkedListPerformance {
                                              Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveAt(state.list,
                         state.random,
                         blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileRemoveObject ///////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -998,13 +984,13 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListRemoveObject(
             IndexedLinkedListStateRemoveObject state,
             Blackhole blackhole) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveObject(state.list, state.random, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1015,10 +1001,10 @@ public class IndexedLinkedListPerformance {
                                               Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveObject(state.list, state.random, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1029,10 +1015,10 @@ public class IndexedLinkedListPerformance {
                                              Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveObject(state.list, state.random, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1043,12 +1029,12 @@ public class IndexedLinkedListPerformance {
                                             Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveObject(state.list, state.random, blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileRemoveObject ///////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1058,13 +1044,13 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileRoddeListRemoveRange(
             IndexedLinkedListStateRemoveRange state) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveRange(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1074,10 +1060,10 @@ public class IndexedLinkedListPerformance {
     public void profileLinkedListRemoveRange(LinkedListStateRemoveRange state) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveRange(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1087,10 +1073,10 @@ public class IndexedLinkedListPerformance {
     public void profileArrayListRemoveRange(ArrayListStateRemoveRange state) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveRange(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1100,12 +1086,12 @@ public class IndexedLinkedListPerformance {
     public void profileTreeListRemoveRange(TreeListStateRemoveRange state) {
         state.list.clear();
         state.list.addAll(state.contentList);
-        
+
         profileRemoveRange(state.list);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileRemoveFirst ////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1116,12 +1102,12 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListRemoveFirst(
             IndexedLinkedListStateRemoveFirst state,
             Blackhole blackhole) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveFirst(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1134,7 +1120,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileRemoveFirst(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1147,7 +1133,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileRemoveFirst(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1161,8 +1147,8 @@ public class IndexedLinkedListPerformance {
         profileRemoveFirst(state.list, blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileRemoveLast /////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1173,12 +1159,12 @@ public class IndexedLinkedListPerformance {
     public void profileRoddeListRemoveLast(
             IndexedLinkedListStateRemoveLast state,
             Blackhole blackhole) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveLast(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1191,7 +1177,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileRemoveLast(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1204,7 +1190,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileRemoveLast(state.list, blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1218,8 +1204,8 @@ public class IndexedLinkedListPerformance {
         profileRemoveLast(state.list, blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileGet ////////////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1234,7 +1220,7 @@ public class IndexedLinkedListPerformance {
                    state.random, 
                    blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1248,7 +1234,7 @@ public class IndexedLinkedListPerformance {
                    state.random, 
                    blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1262,7 +1248,7 @@ public class IndexedLinkedListPerformance {
                    state.random, 
                    blackhole);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1271,12 +1257,12 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListGet(TreeListStateGet state, 
                                    Blackhole blackhole) {
-        
+
         profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileSortRange //////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1290,7 +1276,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileSort(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1302,7 +1288,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileSort(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1314,7 +1300,7 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileSort(state.list);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1327,8 +1313,8 @@ public class IndexedLinkedListPerformance {
         profileSort(state.list);
     }
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     //// profileRemoveAll //////////////////////////////////////////////////////
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
@@ -1338,12 +1324,12 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 0)
     public void profileRoddeListRemoveAll(
             IndexedLinkedListStateRemoveInCollection state) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveAll(state.list, state.set);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1352,12 +1338,12 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileArrayListRemoveAll(
             ArrayListStateRemoveInCollection state) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveAll(state.list, state.set);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1366,12 +1352,12 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileLinkedListRemoveAll(
             LinkedListStateRemoveInCollection state) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveAll(state.list, state.set);
     }
-    
+
     @Benchmark
     @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 1)
@@ -1380,7 +1366,7 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListRemoveAll(
             TreeListStateRemoveInCollection state) {
-        
+
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveAll(state.list, state.set);
@@ -1400,35 +1386,66 @@ public class IndexedLinkedListPerformance {
                 .timeUnit(TimeUnit.MILLISECONDS)
                 .syncIterations(false)
                 .build();
-        
+
         System.out.println("--- Total running times:");
+
+        List<RunResult> runResults = new ArrayList<>(new Runner(opt).run());
         
-        Collection<RunResult> runResults = new Runner(opt).run();
+        Map<String, Double> scoreMap = new HashMap<>();
         
-        for (RunResult rr : runResults) {
-            Result result = rr.getPrimaryResult();
-            System.out.println(
-                    rr.getPrimaryResult().getLabel() 
-                            + ": " 
-                            + result.getScore());
+        for (RunResult runResult : runResults) {
+            scoreMap.put(runResult.getPrimaryResult().getLabel(), 
+                         runResult.getPrimaryResult().getScore());
         }
         
+        runResults.sort((r1, r2) -> {
+            String label1 = r1.getPrimaryResult().getLabel();
+            String label2 = r2.getPrimaryResult().getLabel();
+            
+            label1 = label1.replace("ArrayList",  "");
+            label1 = label1.replace("LinkedList", "");
+            label1 = label1.replace("RoddeList",  "");
+            label1 = label1.replace("TreeList",   "");
+            
+            label2 = label2.replace("ArrayList",  "");
+            label2 = label2.replace("LinkedList", "");
+            label2 = label2.replace("RoddeList",  "");
+            label2 = label2.replace("TreeList",   "");
+            
+            return label1.compareTo(label2);
+        });
+        
+        int index = 0;
+
+        for (RunResult rr : runResults) {
+            Result result = rr.getPrimaryResult();
+            String label = result.getLabel();
+            double score = scoreMap.get(label);
+            
+            System.out.printf("| %37s | %6.3f |\n", label, score);
+            
+            if (++index % 4 == 0) {
+                System.out.println(
+                        "|---------------------------------------|--------|");
+            }
+        }
+
         printTotalDurations(runResults);
     }
-    
+
     private static void printTotalDurations(Collection<RunResult> runResults) {
         Map<String, Double> map = new LinkedHashMap<>();
-        
+
         map.put("ArrayList", 0.0);
         map.put("LinkedList", 0.0);
         map.put("RoddeList", 0.0);
         map.put("TreeList", 0.0);
-        
+
         for (RunResult runResult : runResults) {
             Result result = runResult.getPrimaryResult();
             String label = result.getLabel();
             double score = result.getScore();
-            
+
             if (label.contains("ArrayList")) {
                 map.put("ArrayList", map.get("ArrayList") + score);
             } else if (label.contains("LinkedList")) {
@@ -1439,25 +1456,27 @@ public class IndexedLinkedListPerformance {
                 map.put("TreeList", map.get("TreeList") + score);
             }
         }
-        
+
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            System.out.printf("%10s: %.3f\n", entry.getKey(), entry.getValue());
+            System.out.printf("| %37s | %6.3f |\n", 
+                              entry.getKey(), 
+                              entry.getValue());
         }
     }
-    
+
     // private methods:
     private void profileAddFirst(List<Integer> list, int operations) {
         for (int i = 0; i < operations; i++) {
             list.add(0, i);
         }
     }
-    
+
     private void profileAddLast(List<Integer> list, int operations) {
         for (int i = 0; i < operations; i++) {
             list.add(i);
         }
     }
-    
+
     private void profileAddCollection(List<Integer> list,
                                       int operations, 
                                       Random random) {
@@ -1466,7 +1485,7 @@ public class IndexedLinkedListPerformance {
             list.addAll(col);
         }
     }
-    
+
     private void profileAddCollectionAtIndex(List<Integer> list,
                                              int operations, 
                                              Random random) {
@@ -1476,7 +1495,7 @@ public class IndexedLinkedListPerformance {
             list.addAll(index, col);
         }
     }
-    
+
     private void profileRemoveAt(List<Integer> list,
                                  Random random, 
                                  Blackhole blackhole) {
@@ -1486,7 +1505,7 @@ public class IndexedLinkedListPerformance {
             blackhole.consume(i);
         }
     }
-    
+
     private void profileRemoveObject(List<Integer> list,
                                      Random random, 
                                      Blackhole blackhole) {
@@ -1496,31 +1515,31 @@ public class IndexedLinkedListPerformance {
             blackhole.consume(value);
         }
     }
-    
+
     private void profileRemoveRange(List<Integer> list) {
         if (list instanceof TreeList) {
             int fromIndex = list.size() / 2;
             int toIndex = fromIndex + 1;
-            
+
             clearFromTreeList(list, fromIndex, toIndex);
-            
+
             fromIndex = (list.size() - CLEAR_RANGE_SIZE) / 2;
             toIndex = list.size() - fromIndex;
-            
+
             clearFromTreeList(list, fromIndex, toIndex);
         } else {
             int fromIndex = list.size() / 2;
             int toIndex = fromIndex + 1;
-            
+
             list.subList(fromIndex, toIndex).clear();
-            
+
             fromIndex = (list.size() - CLEAR_RANGE_SIZE) / 2;
             toIndex = list.size() - fromIndex;
-            
+
             list.subList(fromIndex, toIndex).clear();   
         }
     }
-    
+
     private void clearFromTreeList(List<Integer> list, 
                                    int fromIndex, 
                                    int toIndex) {
@@ -1528,11 +1547,11 @@ public class IndexedLinkedListPerformance {
             list.remove(fromIndex);
         }
     }
-    
+
     private void profileRemoveFirst(List<Integer> list, Blackhole blackhole) {
         if (list instanceof Deque) {
             Deque<Integer> deque = (Deque<Integer>) list;
-            
+
             while (!deque.isEmpty()) {
                 Integer num = deque.removeFirst();
                 blackhole.consume(num);
@@ -1544,11 +1563,11 @@ public class IndexedLinkedListPerformance {
             }
         }
     }
-    
+
     private void profileRemoveLast(List<Integer> list, Blackhole blackhole) {
         if (list instanceof Deque) {
             Deque<Integer> deque = (Deque<Integer>) list;
-            
+
             while (!deque.isEmpty()) {
                 Integer num = deque.removeLast();
                 blackhole.consume(num);
@@ -1560,17 +1579,17 @@ public class IndexedLinkedListPerformance {
             }
         }
     }
-    
+
     private void profileAddAtIndex(List<Integer> list, int operations) {
         Random random = new Random(seed + 1L);
-        
+
         for (int i = 0; i < operations; i++) {
             int index = random.nextInt(list.size() + 1);
             Integer value = getRandomInteger(random);
             list.add(index, value);
         }
     }
-    
+
     private void profileGet(List<Integer> list,
                             int operations, 
                             Random random, 
@@ -1580,11 +1599,11 @@ public class IndexedLinkedListPerformance {
             blackhole.consume(j);
         }
     }
-    
+
     private void profileSort(List<Integer> list) {
         list.subList(10, list.size() - 10).sort(Integer::compare);
     }
-    
+
     private void profileRemoveAll(List<Integer> list, 
                                   Collection<Integer> toRemove) {
         if (list instanceof TreeList || list instanceof LinkedList) {
@@ -1595,15 +1614,15 @@ public class IndexedLinkedListPerformance {
             list.removeAll(toRemove);
         }
     }
-    
+
     private static List<Integer> getCollection(Random random) {
         List<Integer> list = new ArrayList<>();
         int listSize = random.nextInt(MAXIMUM_COLLECTION_SIZE + 1);
-        
+
         for (int i = 0; i < listSize; ++i) {
             list.add(i);
         }
-        
+
         return list;
     }
 }
