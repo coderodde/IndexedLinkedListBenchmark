@@ -14,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.collections4.list.CursorableLinkedList;
+import org.apache.commons.collections4.list.NodeCachingLinkedList;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.apache.commons.collections4.list.TreeList;
@@ -52,6 +54,7 @@ public class IndexedLinkedListPerformance {
 //    private static final int CLEAR_LIST_SIZE                = 50_000;
 //    private static final int CLEAR_RANGE_SIZE               = 49_000;
 //    private static final int SORT_LIST_SIZE                 = 10_000;
+//    private static final int CACHE_NODES                    = 500;
 
     // Medium size data:
 //    private static final int ADD_FIRST_OPERATIONS           = 3_000;
@@ -68,6 +71,7 @@ public class IndexedLinkedListPerformance {
 //    private static final int CLEAR_LIST_SIZE                = 100_000;
 //    private static final int CLEAR_RANGE_SIZE               = 99_000;
 //    private static final int SORT_LIST_SIZE                 = 50_000;
+//    private static final int CACHE_NODES                    = 1500;
     
     // Larger data:
     private static final int ADD_FIRST_OPERATIONS           = 5_000;
@@ -84,6 +88,7 @@ public class IndexedLinkedListPerformance {
     private static final int CLEAR_LIST_SIZE                = 150_000;
     private static final int CLEAR_RANGE_SIZE               = 149_000;
     private static final int SORT_LIST_SIZE                 = 150_000;
+    private static final int CACHE_NODES                    = 3_000;
 
     private static final int MAXIMUM_INTEGER         = 1_000;
     private static final int MAXIMUM_COLLECTION_SIZE = 20;
@@ -147,6 +152,38 @@ public class IndexedLinkedListPerformance {
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
+            random = new Random(seed);
+
+            for (int i = 0; i < GET_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateGet {
+        public List<Integer> list;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            random = new Random(seed);
+
+            for (int i = 0; i < GET_SIZE; ++i) {
+                list.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateGet {
+        public List<Integer> list;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
             random = new Random(seed);
 
             for (int i = 0; i < GET_SIZE; ++i) {
@@ -221,6 +258,38 @@ public class IndexedLinkedListPerformance {
             }
         }
     }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveFirst {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveFirst {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -281,6 +350,38 @@ public class IndexedLinkedListPerformance {
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveLast {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveLast {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
 
             for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
@@ -355,6 +456,42 @@ public class IndexedLinkedListPerformance {
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+            random = new Random(seed);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveAt {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+            random = new Random(seed);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveAt {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
             contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
             random = new Random(seed);
 
@@ -438,6 +575,42 @@ public class IndexedLinkedListPerformance {
             }
         }
     }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveObject {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+            random = new Random(seed);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveObject {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Random random;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
+            contentList = new ArrayList<>(REMOVE_COLLECTION_SIZE);
+            random = new Random(seed);
+
+            for (int i = 0; i < REMOVE_COLLECTION_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -498,6 +671,38 @@ public class IndexedLinkedListPerformance {
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
+            contentList = new ArrayList<>(CLEAR_LIST_SIZE);
+
+            for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveRange {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(CLEAR_LIST_SIZE);
+
+            for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
+                contentList.add(i);
+            }
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveRange {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
             contentList = new ArrayList<>(CLEAR_LIST_SIZE);
 
             for (int i = 0; i < CLEAR_LIST_SIZE; ++i) {
@@ -574,6 +779,44 @@ public class IndexedLinkedListPerformance {
         @Setup(Level.Trial)
         public void setup() {
             list = new TreeList<>();
+            contentList = new ArrayList<>(SORT_LIST_SIZE);
+
+            for (int i = 0; i < SORT_LIST_SIZE; ++i) {
+                contentList.add(i);
+            }
+
+            Random random = new Random(seed + 3);
+            Collections.shuffle(contentList, random);
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateSortRange {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(SORT_LIST_SIZE);
+
+            for (int i = 0; i < SORT_LIST_SIZE; ++i) {
+                contentList.add(i);
+            }
+
+            Random random = new Random(seed + 3);
+            Collections.shuffle(contentList, random);
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateSortRange {
+        public List<Integer> list;
+        public List<Integer> contentList;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
             contentList = new ArrayList<>(SORT_LIST_SIZE);
 
             for (int i = 0; i < SORT_LIST_SIZE; ++i) {
@@ -691,6 +934,58 @@ public class IndexedLinkedListPerformance {
             Collections.shuffle(contentList, random);
         }
     }
+
+    @State(Scope.Benchmark)
+    public static class NodeCachingLinkedListStateRemoveInCollection {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Set<Integer> set;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new NodeCachingLinkedList<>(CACHE_NODES);
+            contentList = new ArrayList<>(REMOVE_ALL_SIZE);
+            set = new HashSet<>();
+
+            for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
+                contentList.add(i);
+            }
+
+            Random random = new Random(seed + 3);
+
+            while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
+                set.add(random.nextInt(contentList.size() + 100));
+            }
+
+            Collections.shuffle(contentList, random);
+        }
+    }
+
+    @State(Scope.Benchmark)
+    public static class CursorableLinkedListStateRemoveInCollection {
+        public List<Integer> list;
+        public List<Integer> contentList;
+        public Set<Integer> set;
+
+        @Setup(Level.Trial)
+        public void setup() {
+            list = new CursorableLinkedList<>();
+            contentList = new ArrayList<>(REMOVE_ALL_SIZE);
+            set = new HashSet<>();
+
+            for (int i = 0; i < REMOVE_ALL_SIZE; ++i) {
+                contentList.add(i);
+            }
+
+            Random random = new Random(seed + 3);
+
+            while (set.size() < REMOEVE_COLLECTION_CAPACITY) {
+                set.add(random.nextInt(contentList.size() + 100));
+            }
+
+            Collections.shuffle(contentList, random);
+        }
+    }
     ////////////////////////////////////////////////////////////////////////////
 
     private static Integer getRandomInteger(Random random) {
@@ -714,7 +1009,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddFirst() {
+    public void profileJavaLinkedListAddFirst() {
         profileAddFirst(new LinkedList<>(), ADD_FIRST_OPERATIONS);
     }
 
@@ -738,6 +1033,27 @@ public class IndexedLinkedListPerformance {
     public void profileTreeListAddFirst() {
         profileAddFirst(new TreeList<>(), ADD_FIRST_OPERATIONS);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListAddFirst() {
+        profileAddFirst(new NodeCachingLinkedList<>(CACHE_NODES), 
+                        ADD_FIRST_OPERATIONS);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListAddFirst() {
+        profileAddFirst(new CursorableLinkedList<>(), ADD_FIRST_OPERATIONS);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -758,7 +1074,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddLast() {
+    public void profileJavaLinkedListAddLast() {
         profileAddLast(new LinkedList<>(), ADD_LAST_OPERATIONS);
     }
 
@@ -781,6 +1097,27 @@ public class IndexedLinkedListPerformance {
     public void profileTreeListAddLast() {
         profileAddLast(new TreeList<>(), ADD_LAST_OPERATIONS);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListAddLast() {
+        profileAddLast(new NodeCachingLinkedList<>(CACHE_NODES), 
+                       ADD_LAST_OPERATIONS);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListAddLast() {
+        profileAddLast(new CursorableLinkedList<>(), ADD_LAST_OPERATIONS);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -802,7 +1139,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddAtIndex() {
+    public void profileJavaLinkedListAddAtIndex() {
         profileAddAtIndex(new LinkedList<>(), ADD_AT_OPERATIONS);
     }
 
@@ -824,6 +1161,27 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListAddAtIndex() {
         profileAddAtIndex(new TreeList<>(), ADD_AT_OPERATIONS);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListAddAtIndex() {
+        profileAddAtIndex(new NodeCachingLinkedList<>(CACHE_NODES),     
+                          ADD_AT_OPERATIONS);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListAddAtIndex() {
+        profileAddAtIndex(new CursorableLinkedList<>(), ADD_AT_OPERATIONS);
     }
     ////////////////////////////////////////////////////////////////////////////
 
@@ -848,7 +1206,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddCollection() {
+    public void profileJavaLinkedListAddCollection() {
         Random random = new Random(seed + 2);
         profileAddCollection(new LinkedList<>(),
                              ADD_COLLECTION_OPERATIONS, 
@@ -880,6 +1238,32 @@ public class IndexedLinkedListPerformance {
                              ADD_COLLECTION_OPERATIONS, 
                              random);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new NodeCachingLinkedList<>(CACHE_NODES),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListAddCollection() {
+        Random random = new Random(seed + 2);
+        profileAddCollection(new CursorableLinkedList<>(),
+                             ADD_COLLECTION_OPERATIONS, 
+                             random);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -903,7 +1287,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListAddCollectionAtIndex() {
+    public void profileJavaLinkedListAddCollectionAtIndex() {
         Random random = new Random(seed + 2);
         profileAddCollectionAtIndex(new LinkedList<>(),
                                     ADD_COLLECTION_AT_OPERATIONS, 
@@ -935,6 +1319,32 @@ public class IndexedLinkedListPerformance {
                                     ADD_COLLECTION_AT_OPERATIONS, 
                                     random);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new NodeCachingLinkedList<>(CACHE_NODES),
+                                    ADD_COLLECTION_AT_OPERATIONS, 
+                                    random);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListAddCollectionAtIndex() {
+        Random random = new Random(seed + 2);
+        profileAddCollectionAtIndex(new CursorableLinkedList<>(),
+                                    ADD_COLLECTION_AT_OPERATIONS, 
+                                    random);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -963,8 +1373,10 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveAtIndex(LinkedListStateRemoveAt state,
-                                               Blackhole blackhole) {
+    public void profileJavaLinkedListRemoveAtIndex(
+            LinkedListStateRemoveAt state,
+            Blackhole blackhole) {
+        
         state.list.clear();
         state.list.addAll(state.contentList);
 
@@ -1004,6 +1416,40 @@ public class IndexedLinkedListPerformance {
                         state.random,
                         blackhole);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveAtIndex(
+            NodeCachingLinkedListStateRemoveAt state, 
+            Blackhole blackhole) {
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveAtIndex(
+            CursorableLinkedListStateRemoveAt state, 
+            Blackhole blackhole) {
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveAt(state.list,
+                        state.random,
+                        blackhole);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -1030,8 +1476,10 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveObject(LinkedListStateRemoveObject state,
-                                              Blackhole blackhole) {
+    public void profileJavaLinkedListRemoveObject(
+            LinkedListStateRemoveObject state,
+            Blackhole blackhole) {
+        
         state.list.clear();
         state.list.addAll(state.contentList);
 
@@ -1065,6 +1513,38 @@ public class IndexedLinkedListPerformance {
 
         profileRemoveObject(state.list, state.random, blackhole);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveObject(
+            NodeCachingLinkedListStateRemoveObject state,
+            Blackhole blackhole) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveObject(
+            TreeListStateRemoveObject state,
+            Blackhole blackhole) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveObject(state.list, state.random, blackhole);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -1090,7 +1570,9 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveRange(LinkedListStateRemoveRange state) {
+    public void profileJavaLinkedListRemoveRange(
+            LinkedListStateRemoveRange state) {
+        
         state.list.clear();
         state.list.addAll(state.contentList);
 
@@ -1122,6 +1604,36 @@ public class IndexedLinkedListPerformance {
 
         profileRemoveRange(state.list);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveRange(
+            NodeCachingLinkedListStateRemoveRange state) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveRange(state.list);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveRange(
+            CursorableLinkedListStateRemoveRange state) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+
+        profileRemoveRange(state.list);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -1147,8 +1659,10 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveFirst(LinkedListStateRemoveFirst state,
-                                              Blackhole blackhole) {
+    public void profileJavaLinkedListRemoveFirst(
+            LinkedListStateRemoveFirst state,
+            Blackhole blackhole) {
+        
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveFirst(state.list, blackhole);
@@ -1179,6 +1693,36 @@ public class IndexedLinkedListPerformance {
         state.list.addAll(state.contentList);
         profileRemoveFirst(state.list, blackhole);
     }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveFirst(
+            NodeCachingLinkedListStateRemoveFirst state, 
+            Blackhole blackhole) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveFirst(state.list, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveFirst(
+            TreeListStateRemoveFirst state, 
+            Blackhole blackhole) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveFirst(state.list, blackhole);
+    }
     ////////////////////////////////////////////////////////////////////////////
 
 
@@ -1204,8 +1748,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveLast(LinkedListStateRemoveLast state,
-                                            Blackhole blackhole) {
+    public void profileJavaLinkedListRemoveLast(LinkedListStateRemoveLast state,
+                                                Blackhole blackhole) {
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveLast(state.list, blackhole);
@@ -1232,6 +1776,36 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListRemoveLast(TreeListStateRemoveLast state, 
                                           Blackhole blackhole) {
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveLast(state.list, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveLast(
+            NodeCachingLinkedListStateRemoveLast state, 
+            Blackhole blackhole) {
+        
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveLast(state.list, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveLast(
+            CursorableLinkedListStateRemoveLast state, 
+            Blackhole blackhole) {
+        
         state.list.clear();
         state.list.addAll(state.contentList);
         profileRemoveLast(state.list, blackhole);
@@ -1274,8 +1848,8 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListGet(LinkedListStateGet state,
-                                     Blackhole blackhole) {
+    public void profileJavaLinkedListGet(LinkedListStateGet state,
+                                         Blackhole blackhole) {
         profileGet(state.list, 
                    GET_OPERATIONS,  
                    state.random, 
@@ -1290,6 +1864,32 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListGet(TreeListStateGet state, 
                                    Blackhole blackhole) {
+
+        profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListGet(
+            NodeCachingLinkedListStateGet state, 
+            Blackhole blackhole) {
+
+        profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListGet(
+            CursorableLinkedListStateGet state, 
+            Blackhole blackhole) {
 
         profileGet(state.list, GET_OPERATIONS, state.random, blackhole);
     }
@@ -1328,7 +1928,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListSortRange(LinkedListStateSortRange state) {
+    public void profileJavaLinkedListSortRange(LinkedListStateSortRange state) {
         state.list.clear();
         state.list.addAll(state.contentList);
         profileSort(state.list);
@@ -1341,6 +1941,32 @@ public class IndexedLinkedListPerformance {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
     public void profileTreeListSortRange(TreeListStateSortRange state) {
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileSort(state.list);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListSortRange(
+            NodeCachingLinkedListStateSortRange state) {
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileSort(state.list);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListSortRange(
+            CursorableLinkedListStateSortRange state) {
         state.list.clear();
         state.list.addAll(state.contentList);
         profileSort(state.list);
@@ -1383,7 +2009,7 @@ public class IndexedLinkedListPerformance {
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     @Fork(value = 1)
-    public void profileLinkedListRemoveAll(
+    public void profileJavaLinkedListRemoveAll(
             LinkedListStateRemoveInCollection state) {
 
         state.list.clear();
@@ -1399,6 +2025,34 @@ public class IndexedLinkedListPerformance {
     @Fork(value = 1)
     public void profileTreeListRemoveAll(
             TreeListStateRemoveInCollection state) {
+
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveAll(state.list, state.set);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileNodeCachingLinkedListRemoveAll(
+            NodeCachingLinkedListStateRemoveInCollection state) {
+
+        state.list.clear();
+        state.list.addAll(state.contentList);
+        profileRemoveAll(state.list, state.set);
+    }
+
+    @Benchmark
+    @Warmup(iterations = 1, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1)
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Fork(value = 1)
+    public void profileCursorableLinkedListRemoveAll(
+            CursorableLinkedListStateRemoveInCollection state) {
 
         state.list.clear();
         state.list.addAll(state.contentList);
@@ -1435,15 +2089,15 @@ public class IndexedLinkedListPerformance {
             String label1 = r1.getPrimaryResult().getLabel();
             String label2 = r2.getPrimaryResult().getLabel();
             
-            label1 = label1.replace("ArrayList",  "");
-            label1 = label1.replace("LinkedList", "");
-            label1 = label1.replace("RoddeList",  "");
-            label1 = label1.replace("TreeList",   "");
+            label1 = label1.replace("ArrayList",      "");
+            label1 = label1.replace("JavaLinkedList", "");
+            label1 = label1.replace("RoddeList",      "");
+            label1 = label1.replace("TreeList",       "");
             
-            label2 = label2.replace("ArrayList",  "");
-            label2 = label2.replace("LinkedList", "");
-            label2 = label2.replace("RoddeList",  "");
-            label2 = label2.replace("TreeList",   "");
+            label2 = label2.replace("ArrayList",      "");
+            label2 = label2.replace("JavaLinkedList", "");
+            label2 = label2.replace("RoddeList",      "");
+            label2 = label2.replace("TreeList",       "");
             
             return label1.compareTo(label2);
         });
@@ -1462,8 +2116,8 @@ public class IndexedLinkedListPerformance {
             
             if (++index % 4 == 0) {
                 System.out.println(
-                    "|                                         |         |");
-                
+                "|                                                  " + 
+                "|            |");
             }
         }
 
@@ -1474,9 +2128,11 @@ public class IndexedLinkedListPerformance {
         Map<String, Double> map = new LinkedHashMap<>();
 
         map.put("ArrayList", 0.0);
-        map.put("LinkedList", 0.0);
+        map.put("JavaLinkedList", 0.0);
         map.put("RoddeList", 0.0);
         map.put("TreeList", 0.0);
+        map.put("NodeCachingLinkedList", 0.0);
+        map.put("CursorableLinkedList", 0.0);
 
         for (RunResult runResult : runResults) {
             Result result = runResult.getPrimaryResult();
@@ -1485,17 +2141,29 @@ public class IndexedLinkedListPerformance {
 
             if (label.contains("ArrayList")) {
                 map.put("ArrayList", map.get("ArrayList") + score);
-            } else if (label.contains("LinkedList")) {
-                map.put("LinkedList", map.get("LinkedList") + score);
+            } else if (label.contains("JavaLinkedList")) {
+                map.put("JavaLinkedList", map.get("JavaLinkedList") + score);
             } else if (label.contains("RoddeList")) {
                 map.put("RoddeList", map.get("RoddeList") + score);
             } else if (label.contains("TreeList")) {
                 map.put("TreeList", map.get("TreeList") + score);
+            } else if (label.contains("TreeList")) {
+                map.put("NodeCachingLinkedList", 
+                        map.get("NodeCachingLinkedList") + score);
+            } else if (label.contains("CursorableLinkedList")) {
+                map.put("CursorableLinkedList", 
+                        map.get("CursorableLinkedList") + score);
+            } else {
+                System.err.println(
+                        "Error: unknown label: "
+                                + label 
+                                + ", score: " 
+                                + score);
             }
         }
 
         for (Map.Entry<String, Double> entry : map.entrySet()) {
-            System.out.printf("| Total of %28s | %6.3f |\n", 
+            System.out.printf("| Total of %-50s | %-10.3f |\n", 
                               entry.getKey(), 
                               entry.getValue());
         }
