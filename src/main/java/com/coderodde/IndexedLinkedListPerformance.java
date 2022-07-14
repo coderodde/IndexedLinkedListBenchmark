@@ -2089,35 +2089,36 @@ public class IndexedLinkedListPerformance {
             String label1 = r1.getPrimaryResult().getLabel();
             String label2 = r2.getPrimaryResult().getLabel();
             
-            label1 = label1.replace("ArrayList",      "");
-            label1 = label1.replace("JavaLinkedList", "");
-            label1 = label1.replace("RoddeList",      "");
-            label1 = label1.replace("TreeList",       "");
+            label1 = label1.replace("ArrayList",             "");
+            label1 = label1.replace("JavaLinkedList",        "");
+            label1 = label1.replace("RoddeList",             "");
+            label1 = label1.replace("TreeList",              "");
+            label1 = label1.replace("NodeCachingLinkedList", "");
+            label1 = label1.replace("CursorableLinkedList",  "");
             
-            label2 = label2.replace("ArrayList",      "");
-            label2 = label2.replace("JavaLinkedList", "");
-            label2 = label2.replace("RoddeList",      "");
-            label2 = label2.replace("TreeList",       "");
+            label2 = label2.replace("ArrayList",             "");
+            label2 = label2.replace("JavaLinkedList",        "");
+            label2 = label2.replace("RoddeList",             "");
+            label2 = label2.replace("TreeList",              "");
+            label2 = label2.replace("NodeCachingLinkedList", "");
+            label2 = label2.replace("CursorableLinkedList",  "");
             
             return label1.compareTo(label2);
         });
         
         int index = 0;
         
-        System.out.println(
-                "|                                         |          |");
-        
         for (RunResult rr : runResults) {
             Result result = rr.getPrimaryResult();
             String label = result.getLabel();
             double score = scoreMap.get(label);
             
-            System.out.printf("| %37s | %7.3f |\n", label, score);
+            System.out.printf("| %-50s | %-10.3f |\n", label, score);
             
             if (++index % 4 == 0) {
                 System.out.println(
-                "|                                                  " + 
-                "|            |");
+                        "| -------------------------------------------------- " +
+                        "| ---------- |");
             }
         }
 
@@ -2147,7 +2148,7 @@ public class IndexedLinkedListPerformance {
                 map.put("RoddeList", map.get("RoddeList") + score);
             } else if (label.contains("TreeList")) {
                 map.put("TreeList", map.get("TreeList") + score);
-            } else if (label.contains("TreeList")) {
+            } else if (label.contains("NodeCachingLinkedList")) {
                 map.put("NodeCachingLinkedList", 
                         map.get("NodeCachingLinkedList") + score);
             } else if (label.contains("CursorableLinkedList")) {
